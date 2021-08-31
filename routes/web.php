@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CheckOutController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,5 +26,10 @@ Route::get('/dashboard', function () {
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.list');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+Route::get('/checkout/{product}', [CheckOutController::class, 'create'])->name('checkouts.create');
+Route::post('/checkout/{product}', [CheckOutController::class, 'store'])->name('checkouts.store');
+
+Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases');
 
 require __DIR__.'/auth.php';

@@ -44,6 +44,11 @@
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
+                        <div>
+                            <x-dropdown-link :href="route('purchases')">
+                                {{ __('Purchases') }}
+                            </x-dropdown-link>
+                        </div>
                     </x-slot>
                 </x-dropdown>
             </div>

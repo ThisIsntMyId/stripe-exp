@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="shadow-lg rounded-2xl p-4 bg-white overflow-hidden">
                 <div class="relative">
-                    <img alt="moto" src="{{$product->image}}" class="absolute -right-10 -bottom-8 h-40 w-40 mb-4"/>
+                    <img alt="moto" src="{{$product->image}}" class="absolute -right-10 -bottom-8 h-40 w-40 mb-4" />
                     <div class="w-4/6">
                         <p class="text-gray-800 text-lg font-medium mb-2">
                             {{$product->name}}
@@ -23,9 +23,9 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <a href="{{route('checkouts.create', ['product' => $product->id])}}" class="bg-blue-500 text-white px-4 py-2 my-4 mr-4 rounded" >Buy Now</a>
-                <button class="bg-green-500 text-white px-4 py-2 my-4 mr-4 rounded" >Add To Cart</button>
+
+            <div class="shadow-lg rounded-2xl p-4 bg-white overflow-hidden">
+                <div class="h3">Checkout Successfull</div>
             </div>
         </div>
     </div>
