@@ -21,7 +21,15 @@ class CheckOutController extends Controller
             $stripeCustomer = stripe_instance()->customers->create([
                 'name' => $user->name,
                 'email' => $user->email,
-                'metadata' => ['app_id' => $user->id]
+                'metadata' => ['app_id' => $user->id],
+                'address' => [
+                    'city' => $user->address_city,
+                    'country' => 'IN',
+                    'line1' => $user->address_line_1,
+                    'line2' => $user->address_line_2,
+                    'postal_code' => $user->address_zipcode,
+                    'state' => $user->address_state,
+                ]
             ]);
             $user->stripe_id = $stripeCustomer->id;
             $user->save();
@@ -30,12 +38,15 @@ class CheckOutController extends Controller
         // create payment intent
         $intent = stripe_instance()->paymentIntents->create([
             'amount' => $product->price * 100 + self::SHIPPING_COST + self::COMMISSION,
-            'currency' => 'usd',
+            'currency' => 'inr',
             'customer' => $user->stripe_id,
+            'description' => 'Some random product on internet : ' . $product->name,
         ]);
 
+        // dd($intent);
+
         return view('checkout.create', [
-            'intent_secret' => $intent->secret,
+            'intent_secret' => $intent->client_secret,
             'product' => $product,
             'shipping_cost' => self::SHIPPING_COST,
             'commission' => self::COMMISSION,
@@ -45,7 +56,15 @@ class CheckOutController extends Controller
 
     public function store(Product $product)
     {
+        $paymentIntent = stripe_instance()->paymentIntents->retrieve(
+            request()->transaction_id,
+            []
+        );
+
         // when a checkout is stored, a purchase is created
-        //  $u->purchases()->attach($p->id, ['transaction_id' => '123qwe', 'status' => 'fullfilled', 'amount' => '98.98']);
+        $user = auth()->user();
+        $user->purchases()->attach($product->id, ['transaction_id' => request()->transaction_id, 'status' => 'processing', 'amount' => $paymentIntent->amount / 100]);
+
+        return redirect()->route('purchases');
     }
 }

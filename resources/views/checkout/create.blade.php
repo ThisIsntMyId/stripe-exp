@@ -86,7 +86,7 @@
 
             </div>
             <div class="shadow-lg rounded-2xl p-4 bg-white overflow-hidden">
-                <form method="POST" action="{{route('checkouts.store', ['product' => $product])}}">
+                <form data-client-secret="{{$intent_secret}}" id="payment-form" method="POST" action="{{route('checkouts.store', ['product' => $product])}}">
                     @csrf
 
                     <div class=" relative ">
@@ -155,6 +155,8 @@
                         <div id="card_errors"></div>
                     </div>
 
+                    <input type="hidden" name="transaction_id" />
+
                     <button id="submit">
                         <div class="spinner hidden" id="spinner"></div>
                         <span id="button-text">Checkout</span>
@@ -187,11 +189,11 @@
                 }
             });
 
-            var form = document.getElementById("payment-form");
-                form.addEventListener("submit", function(event) {
+            let form = document.getElementById("payment-form");
+            form.addEventListener("submit", function(event) {
                 event.preventDefault();
                 // Complete payment when the submit button is clicked
-                payWithCard(stripe, card, data.clientSecret);
+                payWithCard(stripe, card, form.dataset.clientSecret);
             });
 
             var payWithCard = function(stripe, card, clientSecret) {
@@ -229,7 +231,9 @@
             };
 
             let orderComplete = function(paymentIntentId) {
-                alert('Thanks ... Pyament id: ' + paymentIntentId)
+                alert('Thanks ... Pyament id: ' + paymentIntentId);
+                document.querySelector('[name="transaction_id"]').value = paymentIntentId;
+                HTMLFormElement.prototype.submit.call(form)
                 loading(false);
             };
 
