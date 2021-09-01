@@ -6,7 +6,7 @@
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Product : ') }} {{ $product->name }}
+            {{ __('Create Card : ') }}
         </h2>
     </x-slot>
 
@@ -16,7 +16,7 @@
                 <h1>Save a card so we can charge you in future.</h1>
             </div>
             <div class="shadow-lg rounded-2xl p-4 bg-white overflow-hidden">
-                <form data-client-secret="{{$intent_secret}}" id="setup-form" method="POST" action="{{route('checkouts.store', ['product' => $product])}}">
+                <form data-client-secret="{{$intent_secret}}" id="setup-form" method="POST" action="{{route('saved-cards.store')}}">
                     @csrf
 
                     <div class=" relative ">
@@ -45,7 +45,7 @@
                         <div id="card_errors"></div>
                     </div>
 
-                    <input type="hidden" name="transaction_id" />
+                    <input type="hidden" name="setup_id" />
 
                     <button id="submit">
                         <div class="spinner hidden" id="spinner"></div>
@@ -124,7 +124,7 @@
 
             let setupForm = document.getElementById('setup-form');
             let cardholderName = document.getElementById('cardholder-name');
-            let clientSecret = setupForm.dataset.secret;
+            let clientSecret = setupForm.dataset.clientSecret;
 
             setupForm.addEventListener('submit', function(ev) {
                 ev.preventDefault();
@@ -132,7 +132,7 @@
                     clientSecret,
                     {
                     payment_method: {
-                        card: cardElement,
+                        card: card,
                         billing_details: {
                         name: cardholderName.value,
                         },

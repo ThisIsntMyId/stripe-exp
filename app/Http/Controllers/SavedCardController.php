@@ -32,22 +32,24 @@ class SavedCardController extends Controller
 
     public function store(Request $request)
     {
-        dd(request()->all());
+        return redirect()->route('saved-cards')->with('status', 'card saved');
     }
 
     public function charge(Request $request)
     {
         $payment_method_id = $request->card;
+        $charge = ($request->amt ?? 100) * 100;
 
         try {
-            stripe_instance()->paymentIntents->create([
-              'amount' => 1099,
+            $dd = stripe_instance()->paymentIntents->create([
+              'amount' => $charge,
               'currency' => 'inr',
               'customer' => auth()->user()->stripe_id,
               'payment_method' => $payment_method_id,
               'off_session' => true,
               'confirm' => true,
             ]);
+            return redirect()->route('saved-cards')->with('status', 'card charged. Transaction id: ' . $dd->id);
         } catch (\Stripe\Exception\CardException $e) {
             dd($e);
             // Error code will be authentication_required if authentication is needed

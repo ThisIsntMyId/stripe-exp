@@ -5,11 +5,14 @@
         </h2>
     </x-slot>
 
+    @if(session()->get('status'))
+    {{session()->get('status')}}
+    @endif
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="grid grid-cols-3 gap-4">
                 @foreach ($cards as $card)
-                @dump($card)
 
                 <div class="shadow-lg rounded-2xl p-4 bg-white overflow-hidden">
                     <div class="relative">
@@ -26,8 +29,9 @@
                         </div>
                     </div>
                     <div class="grid grid-col-2 gap-2">
-                        <form action="{{route('saved-cards.charge', ['card' => $card->card->id])}}" method="POST">
+                        <form action="{{route('saved-cards.charge', ['card' => $card->id])}}" method="POST">
                             @csrf
+                            <input type="text" name="amt">
                             <button type="submit" class="py-2 px-4  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
                                 Charge Now
                             </button>
